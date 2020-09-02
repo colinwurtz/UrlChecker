@@ -24,5 +24,3 @@ $csv| ForEach-Object {
 }
 
 $lines | Export-Csv -Path $outFile -NoTypeInformation
-
-# $_.ShortLink + ","  + $_.Redirect + "," + $result | Out-File -FilePath $outFile -Append
