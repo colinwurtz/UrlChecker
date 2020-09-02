@@ -9,15 +9,26 @@ $csv| ForEach-Object {
     $line = $_
 
     $Response = Invoke-WebRequest -URI $_.ShortLink -UseBasicParsing
-    Write-Host $Response.BaseResponse.ResponseUri
+    Write-Host $Response.BaseResponse.uri
+
+    
     
     if ($Response.BaseResponse.ResponseUri –eq $_.Redirect) {
          $result = "Works"
     } else {
-         $result = "Failed"
+        #Double redirect
+        Write-Host "Double redirect check, if " $Response.BaseResponse.ResponseUri "redirects"
+        $DoubleRedirect = Invoke-WebRequest -URI $Response.BaseResponse.ResponseUri -UseBasicParsing
+
+        if ($DoubleRedirect.BaseResponse.StatusCode –eq "OK") {
+            Write-Host "Double redirect loaded"
+            $result = "Works"
+        }else{
+            $result = "Failed"
+        }
     }
 
-    Write-Host $line
+    
     $line | Add-Member -NotePropertyName Result -NotePropertyValue $result
     $lines += $line
      
